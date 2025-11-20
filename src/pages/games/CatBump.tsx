@@ -5,6 +5,7 @@ type CatObject = {
         ctx: CanvasRenderingContext2D,
         state: {
             offset: number
+            position: number
         }
     }
 
@@ -18,8 +19,8 @@ const background = (catObject: CatObject) => {
     ctx.fillRect(0,0, canvasWidth, canvasHeight)
 
     mountain(catObject, 50, 120, 120);
-    mountain(catObject, 500, 160, 160);
     mountain(catObject, 800, 125, 100);
+    mountain(catObject, 500, 160, 160);
 
     ctx.fillStyle = "#555";
     ctx.fillRect(0, 250, canvasWidth, 6);
@@ -35,11 +36,13 @@ const background = (catObject: CatObject) => {
 function drawForeground(catObject: CatObject, startX: number) {
     // Small rocks
     drawPixelRock(catObject, startX + 100, 250);
-    drawPixelRock(catObject, startX + 300, 250);
+    drawPixelRock(catObject, startX + 500, 250);
+    drawPixelRock(catObject, startX + 900, 250);
 
     // Cacti
-    drawCactus(catObject, startX + 180, 250);
-    drawCactus(catObject, startX + 500, 250);
+    drawCactus(catObject, startX + 300, 250);
+    drawCactus(catObject, startX + 700, 250);
+    drawCactus(catObject, startX + 1100, 250);
 }
 
 function drawPixelRock(catObject: CatObject, x: number, y: number) {
@@ -48,8 +51,8 @@ function drawPixelRock(catObject: CatObject, x: number, y: number) {
     const canvasHeight = catObject.canvas.height
     const ctx = catObject.ctx
     ctx.fillStyle = "#444";
-    ctx.fillRect(x, y, 4, 4);     // main
-    ctx.fillRect(x+3, y-2, 3, 3); // bump
+    ctx.fillRect(x, y-12, 15, 15);     // main
+    ctx.fillRect(x+3, y-8, 10, 10); // bump
 }
 
 function drawCactus(catObject: CatObject, x: number, y: number) {
@@ -60,15 +63,15 @@ function drawCactus(catObject: CatObject, x: number, y: number) {
     ctx.fillStyle = "#333";
 
     // trunk
-    ctx.fillRect(x, y - 20, 6, 20);
+    ctx.fillRect(x, y - 40, 10, 40);
 
     // left arm
-    ctx.fillRect(x - 4, y - 16, 4, 10);
-    ctx.fillRect(x - 4, y - 16, 4, 3);
+    ctx.fillRect(x - 10, y - 20, 10, 7);
+    ctx.fillRect(x - 7, y - 36, 7, 5);
 
     // right arm
-    ctx.fillRect(x + 6, y - 14, 4, 12);
-    ctx.fillRect(x + 6, y - 14, 4, 3);
+    ctx.fillRect(x + 10, y - 16, 10, 7);
+    ctx.fillRect(x + 10, y - 30, 6, 5);
 }
 
 const mountain = (catObject: CatObject, x:number, baseY:number, height:number) => {
@@ -85,8 +88,7 @@ const cat = (catObject: CatObject) => {
     if(!catObject.canvas) return
     if(!catObject.ctx) return
 
-    const positionY = 244
-
+    const positionY = catObject.state.position
     const ctx = catObject.ctx
     ctx.fillRect(15,positionY - 30,2,5)
     ctx.fillRect(23,positionY - 30,2,5)
@@ -100,6 +102,27 @@ const cat = (catObject: CatObject) => {
 export default function CatBump() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null)
+    const catRef = useRef<CatObject>({
+        canvas: canvasRef.current!,
+        ctx: ctxRef.current!,
+        state: {
+            offset: 0,
+            position: 244
+        }
+    })
+
+    const jump = (e: KeyboardEvent) => {
+        console.log(e.key)
+        if(e.key != 'ArrowUp') return
+        catRef.current.state.position = 200
+    }
+
+    useEffect(() => {
+        window.addEventListener('keydown', jump);
+        return () => {
+            window.removeEventListener('keydown', jump)
+        }
+    }, [])
 
     useEffect(()=> {
         const canvas = canvasRef.current
@@ -108,14 +131,15 @@ export default function CatBump() {
         if(!ctx) return
         ctxRef.current = ctx
 
-        const catObject: CatObject = {
-        canvas: canvasRef.current!,
-        ctx: ctxRef.current!,
-        state: {
-            offset: 0
+        catRef.current = {
+            canvas: canvasRef.current!,
+            ctx: ctxRef.current!,
+            state: {
+                offset: 0,
+                position: 244
+            }
         }
-    }
-        loop(catObject)
+        loop(catRef.current)
     })
 
     const loop = (catObject: CatObject) => {
