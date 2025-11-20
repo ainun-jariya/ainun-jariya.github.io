@@ -9,7 +9,7 @@ import Home from './pages/Home';
 import Projects from './pages/Projects';
 import About from './pages/About';
 import { Routes, Route } from 'react-router-dom';
-import GamesInJavascript from './pages/GamesInJavascript';
+import Games from './pages/Games';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -24,7 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/projects" element={<Projects />} />
-          <Route path="/games" element={<GamesInJavascript />} />
+          <Route path="/games" element={<Games />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </Container>
