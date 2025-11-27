@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Cascadia+Code&display=swap');
+
+body {
+  font-family: 'Cascadia Code', monospace;
+  background: #fff;
+  color: #111;
+  margin: 0;
+}
+
+.cv-page {
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+.cv-header {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.cv-title h1 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.cv-role {
+  font-size: 18px;
+  color: teal;
+}
+
+.cv-meta {
+  text-align: right;
+  font-size: 14px;
+}
+
+.cv-meta a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+}
+
+.cv-meta a:hover {
+  border-bottom-color: #666;
+}
+
+.cv-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.cv-card h2 {
+  margin-top: 0;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.cv-icons img {
+  max-width: 100%;
+}
+
+.cv-footer {
+  text-align: center;
+  font-size: 12px;
+  color: #60646c;
+  margin-top: 24px;
+}

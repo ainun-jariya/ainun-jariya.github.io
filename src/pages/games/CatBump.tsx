@@ -4,8 +4,9 @@ type CatObject = {
         canvas: HTMLCanvasElement,
         ctx: CanvasRenderingContext2D,
         state: {
-            offset: number
-            position: number
+            offset: number,
+            positionX: number,
+            positionY: number
         }
     }
 
@@ -27,7 +28,10 @@ const background = (catObject: CatObject) => {
 
     // --- Looping Foreground Objects ---
     catObject.state.offset -= 2; // scroll speed
-    if (catObject.state.offset < -canvasWidth) catObject.state.offset = 0;
+    if (catObject.state.offset < -catObject.canvas.width) catObject.state.offset = 0;
+
+    drawForeground(catObject, catObject.state.offset);
+    drawForeground(catObject, catObject.state.offset + catObject.canvas.width);
 
     drawForeground(catObject, catObject.state.offset);
     drawForeground(catObject, catObject.state.offset + canvasWidth);
@@ -84,11 +88,13 @@ const mountain = (catObject: CatObject, x:number, baseY:number, height:number) =
     catObject.ctx.fill();
 }
 
-const cat = (catObject: CatObject) => {
+const cat = (catObject: CatObject, startX: number) => {
     if(!catObject.canvas) return
     if(!catObject.ctx) return
 
-    const positionY = catObject.state.position
+    let positionY = catObject.state.positionY
+    positionY += 2; // scroll speed
+    //if (positionY < catObject.canvas.height) positionY = 0;
     const ctx = catObject.ctx
     ctx.fillRect(15,positionY - 30,2,5)
     ctx.fillRect(23,positionY - 30,2,5)
@@ -107,20 +113,24 @@ export default function CatBump() {
         ctx: ctxRef.current!,
         state: {
             offset: 0,
-            position: 244
+            positionX: 0,
+            positionY: 244
         }
     })
 
-    const jump = (e: KeyboardEvent) => {
+    const movingHandler = (e: KeyboardEvent) => {
         console.log(e.key)
-        if(e.key != 'ArrowUp') return
-        catRef.current.state.position = 200
+        if(e.key == 'ArrowUp') catRef.current.state.positionY = 200
+        else if(e.key == 'ArrowRight' && catRef.current.state.offset == 0) {
+            
+        }
+        else return
     }
 
     useEffect(() => {
-        window.addEventListener('keydown', jump);
+        window.addEventListener('keydown', movingHandler);
         return () => {
-            window.removeEventListener('keydown', jump)
+            window.removeEventListener('keydown', movingHandler)
         }
     }, [])
 
@@ -136,7 +146,8 @@ export default function CatBump() {
             ctx: ctxRef.current!,
             state: {
                 offset: 0,
-                position: 244
+                positionX: 0,
+                positionY: 244
             }
         }
         loop(catRef.current)
@@ -144,7 +155,7 @@ export default function CatBump() {
 
     const loop = (catObject: CatObject) => {
         background(catObject);
-        cat(catObject)
+        cat(catObject, 0)
         requestAnimationFrame(()=> loop(catObject))
     }
 
